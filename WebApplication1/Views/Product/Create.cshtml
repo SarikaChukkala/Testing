@@ -1,0 +1,150 @@
+﻿@model WebApplication1.Models.Product
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Product</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProductName, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProductName)
+                @Html.ValidationMessageFor(model => model.ProductName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProductQuantity, new { @class = "control-label col-md-2" }) 
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ProductQuantity)
+                @Html.ValidationMessageFor(model => model.ProductQuantity)
+            
+            </div>
+        &nbsp; <span id="errmsg"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="ProductTypeID" onchange="FillSubProductType()">ProductTypeID</label>
+            <div class="col-md-10">
+                @Html.DropDownList("ProductType", null, htmlAttributes: new { @class = "control-label col-md-2"})
+                @Html.ValidationMessageFor(model => model.ProductTypeID)
+            </div>
+        </div>
+
+ <div class="form-group">
+            <label class="control-label col-md-2" for="ProductSubTypeID">ProductSubTypeID</label>
+            <div class="col-md-10">
+                @Html.DropDownList("ProductSubType", null, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.ValidationMessageFor(model => model.ProductSubTypeID)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+
+        
+            <p>Validate</p>
+
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "GetProducts")
+</div>
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+    $("p").click(function () {
+        alert("Handler for click called.");
+        $(this).hide();
+    });
+
+    $("#ProductQuantity").keypress(function (e) {
+       // if the letter is not digit then display error and don't type anything
+        if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            //display error message
+            $("#errmsg").html("Digits Only").show().fadeOut("slow");
+            return false;
+        }
+    });
+
+    $("#ProductType").change(function (e) {
+        debugger;
+        alert("Change event is called.");
+
+        var productTypeId = $("#ProductType").val().charAt(3);
+        alert("Product Type Id " + productTypeId);
+
+
+          $.ajax
+                ({
+                    url: '/ProductController/FillSubProductType',
+                    type: "GET",
+                    datatype: 'application/json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                    intProductId: +productTypeId
+                    }),
+                    success: function (json,result) {
+                        alert(result);
+
+                        $("#ProductSubType").html("");
+                        $.each($.parseJSON(result), function(i, subtype)  
+                        {  
+                            $("#ProductSubType").append($('<option></option>').val(subtype).html(subtype))  
+                        }) 
+                    },
+                    error: function () {
+                        alert("Something went wrong..")
+                    },
+                });
+
+    });
+
+    //$("#ProductType").change(function () {
+    //    debugger;
+    //    var productTypeId = $("#ProductType").val().charAt(3);
+    //    alert("Product Type Id " + productTypeId);
+
+    //    $.getJSON("../ProductController/FillSubProductType", { intProductId: productTypeId },
+    //           function (data) {
+    //               alert('1');
+    //               var select = $("#ProductSubType");
+    //               select.empty();
+    //               select.append($('<option/>', {
+    //                   value: 0,
+    //                   text: "Select a Subtype"
+    //               }));
+    //               $.each(data, function (index, itemData) {
+    //                   select.append($('<option/>', {
+    //                       value: itemData.Value,
+    //                       text: itemData.Text
+    //                   }));
+    //               });
+    //           });
+    //});
+
+   });
+
+</script>
+
