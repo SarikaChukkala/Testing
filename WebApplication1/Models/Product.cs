@@ -15,15 +15,15 @@ namespace WebApplication1.Models
             set;
         }
 
-        //[Required(ErrorMessage = "Product name is required")]
-        //[StringLength(15, ErrorMessage = "Name can be no larger than 15 characters")]
+        [Required(ErrorMessage = "Product name is required")]
+        [StringLength(15, ErrorMessage = "Name can be no larger than 15 characters")]
         public string ProductName
         {
             get;
             set;
         }
 
-        //[Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
         public int ProductQuantity
         {
             get;
