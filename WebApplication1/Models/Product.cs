@@ -33,5 +33,8 @@ namespace WebApplication1.Models
         public int ProductTypeID { get; set; }
         public int ProductSubTypeID { get; set; }
 
+        public string Description
+        { get; set; }
+
       }
 }
